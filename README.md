@@ -11,7 +11,7 @@ Open Climate Fix also provides a commercial PV forecast, please get in touch at 
 
 We recently presented the Quartz Solar Forecast project at FOSDEM 2024 (Free and Open source Software Developers' European Meeting), providing an introduction to Open Climate Fix's motivation for this project and its impact on aiding organizations in resource optimization. To learn more about predictive model's functionality, visit here: [Video Recording](https://www.youtube.com/watch?v=NAZ2VeiN1N8)
 
-The current model uses GFS or ICON NWPs to predict the solar generation at a site
+The current model uses GFS, ICON or UKMO NWPs to predict the solar generation at a site
 
 ```python
 from quartz_solar_forecast.forecast import run_forecast
@@ -77,7 +77,7 @@ Two models are currently available to make predictions.
 
 **Gradient Boosting Model** (default)
 
-The model uses GFS or ICON NWPs to predict the solar generation at a site.
+The model uses GFS, ICON or UKMO NWPs to predict the solar generation at a site.
 It is a gradient boosted tree model and uses 9 NWP variables.
 It is trained on 25,000 PV sites with over 5 years of PV history, which is available [here](https://huggingface.co/datasets/openclimatefix/uk_pv).
 The training of this model is handled in [pv-site-prediction](https://github.com/openclimatefix/pv-site-prediction)
@@ -134,10 +134,20 @@ The following plot shows example predictions of both models for the same time pe
 ![model comparison](images/model_data_comparison_hr.png)
 _Predictions using the two different models and different data sources._
 
+
+## NWP Source Comparisons
+The following plot shows example predictions of all three nwp sources ('icon', 'gfs', 'ukmo') using the 'gb' model.
+Code for the plot can be found [here]
+
+![forecast comparison](Open-Source-Quartz-Solar-Forecast/images/forecast_comparison.png)
+
+
+Open-Source-Quartz-Solar-Forecast/images
+
 ## Known restrictions
 
 - The model is trained on [UK MetOffice](https://www.metoffice.gov.uk/services/data/met-office-weather-datahub) NWPs, but when running inference we use [GFS](https://www.ncei.noaa.gov/products/weather-climate-models/global-forecast) data from [Open-meteo](https://open-meteo.com/). The differences between GFS and UK MetOffice could led to some odd behaviours.
-- Depending, whether the timestamp for the prediction lays more than 90 days in the past or not, different data sources for the NWP are used. If we predict within the last 90 days, we can use ICON or GFS from the open-meteo Weather Forecast API. Since ICON doesn't provide visibility, this parameter is queried from GFS in any case. If the date for the prediction is further back in time, a reanalysis model of historical data is used (open-meteo | Historical Weather API). The historical weather API doesn't't provide visibility at all, that's why it's set to a maximum of 24000 meter in this case. This can lead to some loss of precision.
+- Depending, whether the timestamp for the prediction lays more than 90 days in the past or not, different data sources for the NWP are used. If we predict within the last 90 days, we can use ICON, GFS or UKMO from the open-meteo Weather Forecast API. Since ICON doesn't provide visibility, this parameter is queried from GFS in any case. If the date for the prediction is further back in time, a reanalysis model of historical data is used (open-meteo | Historical Weather API). The historical weather API doesn't't provide visibility at all, that's why it's set to a maximum of 24000 meter in this case. This can lead to some loss of precision.
 - The model was trained and tested only over the UK, applying it to other geographical regions should be done with caution.
 - When using the XGBoost model, only hourly predictions within the last 90 days are available for data consistency.
 
@@ -194,6 +204,7 @@ Notes:
 - PV: Photovoltaic
 - MAE: Mean Absolute Error
 - [ICON](https://www.dwd.de/EN/ourservices/nwp_forecast_data/nwp_forecast_data.html): ICOsahedral Nonhydrostatic
+- UKMO: [UK Met Office](https://open-meteo.com/en/docs/ukmo-api#hourly=)
 - KW: Kilowatt
 
 ## FOSDEM
