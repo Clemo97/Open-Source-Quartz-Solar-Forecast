@@ -10,9 +10,13 @@ def main():
     ts = datetime.today() - timedelta(weeks=1)
 
     # User has three options for the 'nwp_source': 'icon', 'gfs', or 'ukmo'.
-    predictions_df = run_forecast(site=site, ts=ts, nwp_source="icon")
+    predictions_df = run_forecast(site=site, ts=ts, nwp_source="gfs")
+
+    # Export DataFrame to CSV
+    predictions_df.to_csv('predictions_gfs.csv', index=False)  
 
     print(predictions_df)
+
     print(f"Max: {predictions_df['power_kw'].max()}")
 
 if __name__ == "__main__":
