@@ -78,6 +78,71 @@ if inverter_type == "Enphase" and not st.session_state.enphase_access_token:
         
         st.session_state.redirect_url = st.text_input("Enter the redirect URL:", value=st.session_state.redirect_url)
 
+# with st.sidebar:
+#     ENPHASE_SYSTEM_ID = st.text_input("Enphase System Id ", key="enphase_client_id", type="password")
+#     ENPHASE_CLIENT_ID = st.text_input("Enphase Client Id ", key="enphase_system_id", type="password")
+#     ENPHASE_CLIENT_SECRET = st.text_input("Enphase Client_Secret ", key="enphase_client_secret", type="password")
+#     ENPHASE_API_KEY = st.text_input("Enphase API_KEY ", key="enphase_api_key", type="password")
+
+
+# Define dictionaries for each inverter and Open Meteo settings
+env_variables = {
+    "enphase": {
+        "ENPHASE_SYSTEM_ID": "",
+        "ENPHASE_CLIENT_ID": "",
+        "ENPHASE_CLIENT_SECRET": "",
+        "ENPHASE_API_KEY": ""
+    },
+    "solis": {
+        "SOLIS_CLOUD_API_KEY": "",
+        "SOLIS_CLOUD_API_KEY_SECRET": "",
+        "SOLIS_CLOUD_API_URL": "https://www.soliscloud.com",
+        "SOLIS_CLOUD_API_PORT": "13333"
+    },
+    "givenergy": {
+        "GIVENERGY_API_KEY": ""
+    },
+    "solarman": {
+        "SOLARMAN_API_URL": "https://home.solarmanpv.com/maintain-s/history/power",
+        "SOLARMAN_TOKEN": "",
+        "SOLARMAN_ID": ""
+    },
+    "open_meteo": {
+        "OPEN_METEO_MODELS": "ncep_gfs013",
+        "OPEN_METEO_VARIABLES": "temperature_2m,precipitation,cloud_cover",
+        "OPEN_METEO_MAX_AGE_DAYS": 3,
+        "OPEN_METEO_REPEAT_INTERVAL": 5,
+        "OPEN_METEO_CONCURRENT": 4
+    }
+}
+
+# Sidebar UI for selecting inverter type
+st.sidebar.title("Inverter Configuration")
+inverter_type = st.sidebar.selectbox("Select Inverter", ["Enphase", "Solis", "GivEnergy", "Solarman"])
+
+# Function to generate input fields based on selected inverter
+def display_inverter_fields(inverter):
+    # Get the dictionary of credentials for the selected inverter
+    inverter_credentials = env_variables.get(inverter.lower(), {})
+
+    # Render input fields dynamically for each credential in the inverter dictionary
+    for key in inverter_credentials:
+        env_variables[inverter.lower()][key] = st.sidebar.text_input(
+            label=key.replace("_", " ").title(),
+            value=inverter_credentials[key],
+            type="password"
+        )
+
+# Display input fields for the selected inverter
+display_inverter_fields(inverter_type)
+
+# Example: Displaying the entered credentials (for debugging only; in production, avoid showing sensitive information)
+st.write("Entered Credentials:", env_variables[inverter_type.lower()])
+
+
+
+# end code block
+
 if st.sidebar.button("Run Forecast"):
     if inverter_type == "Enphase":
         if not st.session_state.enphase_access_token or not st.session_state.enphase_system_id:
