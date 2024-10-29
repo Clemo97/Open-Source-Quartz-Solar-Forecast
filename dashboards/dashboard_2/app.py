@@ -78,14 +78,6 @@ if inverter_type == "Enphase" and not st.session_state.enphase_access_token:
         
         st.session_state.redirect_url = st.text_input("Enter the redirect URL:", value=st.session_state.redirect_url)
 
-# with st.sidebar:
-#     ENPHASE_SYSTEM_ID = st.text_input("Enphase System Id ", key="enphase_client_id", type="password")
-#     ENPHASE_CLIENT_ID = st.text_input("Enphase Client Id ", key="enphase_system_id", type="password")
-#     ENPHASE_CLIENT_SECRET = st.text_input("Enphase Client_Secret ", key="enphase_client_secret", type="password")
-#     ENPHASE_API_KEY = st.text_input("Enphase API_KEY ", key="enphase_api_key", type="password")
-
-
-# Define dictionaries for each inverter and Open Meteo settings
 env_variables = {
     "enphase": {
         "ENPHASE_SYSTEM_ID": "",
